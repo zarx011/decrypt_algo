@@ -1,6 +1,8 @@
 # transferred psuedocode from docs & tried to format to python syntax
 # need to finish valid func & see if it runs
 
+# file for backtracking decruption algorithm for demonstration
+
 import string
 
 # implementing backtracking
