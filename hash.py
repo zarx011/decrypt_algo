@@ -1,2 +1,2 @@
 
-# file for hash/dict/IOC decruption algorithm for demonstration
+# file for hash/dict/IOC decryption algorithm for demonstration
