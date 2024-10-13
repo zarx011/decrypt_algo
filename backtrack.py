@@ -29,7 +29,7 @@ def is_valid(decrypted_text):
     
     word_list = decrypted_text.split()
     valid_count = 0
-    
+
     # count words in common words set
     for word in word_list:
         if word in common_words:
@@ -68,6 +68,8 @@ def decrypt_vigenere(ciphertext, max_key_len):
 
 # test call
 if __name__ == "__main__":
-    ciphertext = "rijvs uyvjn"  # "hello world" encrypted with key "key"
+    # ciphertext = "rijvs uyvjn"  # "hello world" encrypted with key "key"
+    ciphertext = "rijvs"  # "hello" encrypted with key "key"
+
     result = decrypt_vigenere(ciphertext, max_key_len=5)
     print(result)
