@@ -58,16 +58,16 @@ def decrypt_vigenere(ciphertext, max_key_len, common_words):
             return f"Key: {key}, Decrypted Text: {decrypted_text}"
     return "Decryption failed"
 
-# load a set of common end words
-def load_common_words():
-    return {"the", "and", "hello", "world", "this", "is", "an", "example", "test",
-            "cipher", "key", "for", "backtracking", "algorithm", "there", "was",
-            "with", "a", "to", "of", "words", "message", "book", "fun", "secret", "vignere"}
+# load set of common english words
+def load_common_words(filename='common_words.txt'):
+    with open(filename, 'r') as file:
+        # read lines & strip whitespace, then convert to a set
+        return {line.strip() for line in file if line.strip()}
 
 # test call
 if __name__ == "__main__":
-    common_words = load_common_words()  #lLoad common words
+    common_words = load_common_words()  #load from file
    
     ciphertext = input("Enter the encrypted message: ").strip().lower()  # input handling
-    result = decrypt_vigenere(ciphertext, max_key_len=10, common_words=common_words)
+    result = decrypt_vigenere(ciphertext, max_key_len=5, common_words=common_words)
     print(result)
