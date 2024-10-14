@@ -1549,3 +1549,13 @@ urgent
 visit
 welcome
 youth
+girl
+boy
+girlfriend
+boyfriend
+husband
+wife
+child
+children
+blackberry
+baby

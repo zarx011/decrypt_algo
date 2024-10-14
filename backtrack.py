@@ -86,7 +86,7 @@ def decrypt_vigenere(ciphertext, max_key_len, common_words):
 
         key, decrypted_text = backtrack(ciphertext, key_len, common_words=common_words)
         if key:
-            return f"Key: {key}, Decrypted Text: {decrypted_text}"
+            return f"Key: {key} | Decrypted Text: {decrypted_text}"
     return "Decryption failed"
 
 # load set of common english words
