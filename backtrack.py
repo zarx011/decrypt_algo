@@ -11,12 +11,21 @@ def shift_decrypt(char, key_char):
 def decrypt_wkey(ciphertext, key):
     key_len = len(key)
     plaintext = []
-    for i, char in enumerate(ciphertext):
+   # for i, char in enumerate(ciphertext):
+    #    if char.isalpha():
+       #     key_char = key[i % key_len]
+       #     plaintext.append(shift_decrypt(ciphertext[i], key_char))
+      #  else:
+          #  plaintext.append(char)
+    key_index = 0  # separate counter for key index
+    for char in ciphertext:
         if char.isalpha():
-            key_char = key[i % key_len]
-            plaintext.append(shift_decrypt(ciphertext[i], key_char))
+            key_char = key[key_index % key_len]  # only use for alphabetic characters
+            plaintext.append(shift_decrypt(char, key_char))
+            key_index += 1  # increment only for letters
         else:
-            plaintext.append(char)
+            plaintext.append(char)  # preserve non-alphabetic characters
+
     return ''.join(plaintext)
 
 # func to validate decrypted text
@@ -69,7 +78,8 @@ def decrypt_vigenere(ciphertext, max_key_len):
 # test call
 if __name__ == "__main__":
     # ciphertext = "rijvs uyvjn"  # "hello world" encrypted with key "key"
-    ciphertext = "rijvs"  # "hello" encrypted with key "key"
+   # ciphertext = "rijvs uyvjn"  # "hello" encrypted with key "key"
+    ciphertext = "rgfy"
 
     result = decrypt_vigenere(ciphertext, max_key_len=5)
     print(result)
