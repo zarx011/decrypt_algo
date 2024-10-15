@@ -1,7 +1,7 @@
-''' seems to stop checking once key_len = 6 even though max set at 10
-# doesn't seem to work for keys other than "key
- something is weird with it in general but not sure exactly what yet
-'''
+
+# file for backtracking Vignere decryption algorithm for demonstration
+
+
 
 import string
 
