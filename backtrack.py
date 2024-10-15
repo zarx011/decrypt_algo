@@ -4,7 +4,7 @@
 
 import string
 
-# func to decrypt a char w/ key
+# func to decrypt a char w/ key - shift first
 def shift_decrypt(char, key_char):
     if char.isalpha():
         shift = ord(key_char.lower()) - ord('a')
