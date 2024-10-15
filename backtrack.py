@@ -1,6 +1,7 @@
-# seems to stop checking once key_len = 6 even though max set at 10
-# doesn't seem to work for keys other than "key"
-# something is weird with it in general but not sure exactly what yet
+''' seems to stop checking once key_len = 6 even though max set at 10
+# doesn't seem to work for keys other than "key
+ something is weird with it in general but not sure exactly what yet
+'''
 
 import string
 
@@ -39,30 +40,31 @@ def is_valid(decrypted_text, common_words):
 
 # backtracking func for key combinations
 def backtrack(ciphertext, key_len, curr_key='', common_words=set()):
-    #print(f"Current key: {curr_key}, Length: {len(curr_key)}")  # debug
+    '''print(f"Current key: {curr_key}, Length: {len(curr_key)}")  # debug
 
-    #if len(curr_key) == key_len:
-      #  print("Reached desired key length:", curr_key)
-      #  decrypted_text = decrypt_wkey(ciphertext, curr_key)
+    if len(curr_key) == key_len:
+        print("Reached desired key length:", curr_key)
+       decrypted_text = decrypt_wkey(ciphertext, curr_key)
 
-      #  print(f"Trying key: {curr_key}, Decrypted Text: {decrypted_text}")  # debugging
+        print(f"Trying key: {curr_key}, Decrypted Text: {decrypted_text}")  # debugging
 
-      #  if is_valid(decrypted_text, common_words):
-         #   print("Found valid decryption!")
-          #  return curr_key, decrypted_text  # return when valid
-      #  else:
-          #  print(f"Decryption using key '{curr_key}' failed or not valid.")
-      #  return None, None  # if no valid decryption
+        if is_valid(decrypted_text, common_words):
+            print("Found valid decryption!")
+            return curr_key, decrypted_text  # return when valid
+        else:
+           print(f"Decryption using key '{curr_key}' failed or not valid.")
+        return None, None  # if no valid decryption
 
-        # recursively try all letters in alphabet
- #   for letter in string.ascii_lowercase:
-    #    print(f"Trying letter: {letter} with current key: {curr_key}")  # Debugging
-     #   new_key, decrypted_text = backtrack(ciphertext, key_len, curr_key + letter, common_words)
-      #  if new_key:  # if valid key found, stop
-        #   return new_key, decrypted_text  # return immediately after finding
+         recursively try all letters in alphabet
+   for letter in string.ascii_lowercase:
+       print(f"Trying letter: {letter} with current key: {curr_key}")  # Debugging
+        new_key, decrypted_text = backtrack(ciphertext, key_len, curr_key + letter, common_words)
+       if new_key:  # if valid key found, stop
+           return new_key, decrypted_text  # return immediately after finding
 
-    # if no valid key, return None
-  #  return None, None
+     if no valid key, return None
+    return None, None
+'''
     
     print(f"Trying key length: {key_len}")  # debug
     for curr_key in common_words:
