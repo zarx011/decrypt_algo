@@ -4,6 +4,159 @@ import string
 from collections import Counter
 import hashlib
 
+# create dictionary from common_words.txt to group by length
+def load_dict(filename='common_words.txt'):
+    with open(filename, 'r') as file:
+        # read lines & strip whitespace & store as dictionary
+        return {line.strip().lower(): len(line.strip()) for line in file if line.strip()}  # make lowercase
+    
+# psuedo 'global variable' for file
+common_words = load_dict('common_words.txt')
+    #-----------------------------------------------------------------------------------------------------------------------
+print(f"Common words loaded: {common_words}")
+
+
+# func to hash a key
+def hash_key(key):
+    return hashlib.md5(key.encode()).hexdigest()
+
+# func to apply current key to decrypt ,shifts ciphertext to alpha 
+def apply_curr_key(ciphertext, key):
+    plaintext = []
+    key_len = len(key)
+    # debug error check
+    if not ciphertext or not key:
+        return ""
+    # shift decrypt
+    for i, char in enumerate(ciphertext):
+        if char.isalpha():
+            shift = ord(key[i % key_len].lower()) - ord('a')
+            decrypted_char = chr((ord(char.lower()) - ord('a') - shift) % 26 + ord('a'))
+            plaintext.append(decrypted_char)
+        else:
+            plaintext.append(char)  # preserve non-alphabetic chars
+
+    return ''.join(plaintext) # return plaintext
+    
+# func to check valid words using hash table lookup
+def is_valid(decrypted_text, valid_words):
+    if not decrypted_text:
+        return False
+    words = decrypted_text.split()
+        #-----------------------------------------------------------------------------------------------------------------------
+    print(f"WORDS {words}")
+   # return sum(1 for word in words if word.lower() in common_words)
+    return all(word in valid_words for word in words)
+
+# func to find words from dict by length
+def find_by_len(common_words, length):
+    return [word for word in common_words.keys() if len(word) == length]  # access keys of dict
+
+# func to divide ciphertext into col based on guessed key_len
+def group_by_len(ciphertext, key_len):
+    cols = ['' for _ in range(key_len)]
+    for i, char in enumerate(ciphertext):
+        if char.isalpha():
+            cols[i % key_len] += char.lower()
+
+    #-----------------------------------------------------------------------------------------------------------------------
+    print(f"Grouped columns for key length {key_len}: {cols}")  # debug
+    return [col for col in cols if col]  # filter out empty
+
+# func to calculate IoC for each guessed len
+def len_with_ioc(ciphertext, max_key_len = 10):
+    best_len = 1
+    best_ioc = 0.068
+    # to iterate each column
+    for key_len in range(1, max_key_len + 1):
+        cols = group_by_len(ciphertext, key_len)
+            #-----------------------------------------------------------------------------------------------------------------------
+        print(f"COLS {cols}")
+        if not cols:
+                continue # skip if empty
+        # calculate sum and avergae
+        ioc_sum = sum(calc_ioc(col) for col in cols)
+            #-----------------------------------------------------------------------------------------------------------------------
+        print(f"IOC SUM {ioc_sum}")
+        avg_ioc = ioc_sum / len(cols) if cols else 0.0
+            #-----------------------------------------------------------------------------------------------------------------------
+        print(f"AVG IOC {avg_ioc}")
+        # compare w target IoC of 0.068 [english language]
+        if abs(avg_ioc - 0.068) < abs(best_ioc - 0.068):
+            best_ioc = avg_ioc
+            best_len = key_len
+            print(f"BEST IOC {best_ioc} AND BEST LEN {best_len}")
+    return best_len if best_ioc > 0 else 1
+
+# helper func to calculate IoC for single col of ciphertext
+def calc_ioc(col_text):
+    n = len(col_text)
+    if n <= 1:
+        return 0.0
+    frequencies = Counter(col_text)
+            #-----------------------------------------------------------------------------------------------------------------------
+    print(f"FREQUENCIES {frequencies}")
+    numerator = sum(f * (f - 1) for f in frequencies.values())
+        #-----------------------------------------------------------------------------------------------------------------------
+    print(f"NUMERATOR {numerator}")
+    denominator = n * (n - 1)
+    #-----------------------------------------------------------------------------------------------------------------------
+    print(f"DENOMINATOR {denominator}")
+    return numerator / denominator if denominator != 0 else 0.0
+  
+# main decrypt func (combining IoC, Greedy and Hash) validation
+def combined_decrypt_vignere(ciphertext, max_key_len=10):
+    # common_words = load_dict('common_words.txt')
+    likely_len = len_with_ioc(ciphertext, max_key_len)
+        #-----------------------------------------------------------------------------------------------------------------------
+    print(f"Most likely key length from IoC: {likely_len}")
+    # variable for possible keys
+    possible_keys = find_by_len(common_words, likely_len)
+        #-----------------------------------------------------------------------------------------------------------------------
+    print(f"POSIBLE KEYS: {possible_keys}")
+    # set hash for keys already tested
+    tested = set()
+    # iterate through all possible keys
+    for key in possible_keys:
+        key_hash = hash_key(key)
+        # skip if already tested
+        if key_hash in tested:
+                #-----------------------------------------------------------------------------------------------------------------------
+            print(f"Skipping already tested key: {key}")
+            continue
+        # decrypt w/ current possible key
+        decrypted_text = apply_curr_key(ciphertext, key)
+            #-----------------------------------------------------------------------------------------------------------------------
+        print(f"DECRYPTED TEZT {decrypted_text}")
+        if is_valid(decrypted_text, common_words):
+            return key, decrypted_text  # return first valid decryption found
+        # add hash of the tested key to set
+        tested.add(key_hash)
+    # if no valid decryption found
+    return None, None
+
+# func to remove non-alphabetic char and preprocess ciphertext
+def preprocess(ciphertext):
+    return ''.join([char.lower() for char in ciphertext if char.isalpha()])
+
+# entry point
+if __name__ == "__main__":
+    ciphertext = input("Enter the encrypted message: ")
+    cleaned_ciphertext = ''.join(c for c in ciphertext if c.isalpha() or c.isspace())  # Clean the input
+    key, decrypted_text = combined_decrypt_vignere(cleaned_ciphertext, max_key_len=10)
+        #-----------------------------------------------------------------------------------------------------------------------
+
+    #if key:
+       #print(f"Decryption successful!\nKey: {key}\nDecrypted Text: {decrypted_text}")
+    #else:
+     #   print("Decryption failed")
+
+# -------------------------------------------------------------------------------------------------------------------------------
+''''
+import string
+from collections import Counter
+import hashlib
+
 
 # func to shift characters
 def shift_decrypt(char, key_char):
@@ -17,6 +170,9 @@ def decrypt_with_key(ciphertext, key):
     plaintext = []
     key_len = len(key)
     #key_index = 0  # separate counter for key idx
+    if not ciphertext or not key:
+        return ""
+    
     for i, char in enumerate(ciphertext):
         if char.isalpha():
             shift = ord(key[i % key_len].lower()) - ord('a')
@@ -25,7 +181,8 @@ def decrypt_with_key(ciphertext, key):
         else:
             plaintext.append(char)  # preserve non-alphabetic chars
 
-    return ''.join(plaintext)
+   # return ''.join(plaintext)
+    pass
 
 # load set of common english words
 def load_common_words(filename='common_words.txt'):
@@ -35,6 +192,8 @@ def load_common_words(filename='common_words.txt'):
 
 # func to count valid words using hash table lookup
 def is_valid(decrypted_text, valid_words):
+    if not decrypted_text:
+        return False
     words = decrypted_text.split()
    # return sum(1 for word in words if word.lower() in common_words)
     return all(word in valid_words for word in words)
@@ -48,6 +207,7 @@ def get_most_frequent(ciphertext):
             letter_count[char.lower()] += 1
 
 '''
+'''
     letter_count = {char: 0 for char in string.ascii_lowercase}
     for char in ciphertext:
         if char.isalpha():
@@ -55,6 +215,7 @@ def get_most_frequent(ciphertext):
     sorted_letters = sorted(letter_count, key=letter_count.get, reverse=True)
     return sorted_letters[:5]  # return the top 5 most freq letters
     '''
+''''
 
 # helper func to calculate IoC for single col of ciphertext
 def calc_ioc(col_text):
@@ -67,6 +228,7 @@ def calc_ioc(col_text):
     return numerator / denominator if denominator != 0 else 0.0
 
 '''
+''''
     n = len(col_text)
     if n <= 1:
         return 0.0
@@ -86,7 +248,7 @@ def calc_ioc(col_text):
 
     return numerator / denominator
     '''
-
+''''
 # func to divide ciphertext into col based on guessed key_len
 def group_by_len(ciphertext, key_len):
     cols = ['' for _ in range(key_len)]
@@ -120,7 +282,8 @@ def len_with_ioc(ciphertext, max_key_len = 10):
 
     return best_len if best_ioc > 0 else 1
 
-''''
+'''
+'''
     best_len = 1
     best_ioc = 0.0
 
@@ -163,6 +326,8 @@ def len_with_ioc(ciphertext, max_key_len = 10):
             best_ioc = avg_ioc
             best_len = key_len
             '''
+
+'''
 # func to find keys of same length from txt
 def find_keys_of_len(common_words, length):
     return [word for word in common_words if len(word) == length]
@@ -195,7 +360,7 @@ def combined_decrypt_vignere(ciphertext, max_key_len=10):
         decrypted_text = decrypt_with_key(ciphertext, key)
 
         print(f"processing decrypted text {decrypted_text} using key {candidate_keys}")
-        
+
         # check if the decrypted text is valid
         if is_valid(decrypted_text, common_words):
             return key, decrypted_text  # Return the first valid decryption found
@@ -203,69 +368,10 @@ def combined_decrypt_vignere(ciphertext, max_key_len=10):
         # Add the hash of the tested key to the set
         tested_keys.add(key_hash)
         
-    return None, "No valid found"
-
-
-
-'''''
-    for key in candidate_keys:
-        if len(key) == likely_key_len:
-            decrypted_text = decrypt_with_key(ciphertext, key)
-            print(f"processing decrypted text {decrypted_text} using key {candidate_keys}")
-            if count_valid(decrypted_text, common_words):
-                return key, decrypted_text
-    return None, "Decryption Failed"
+    return key, decrypted_text
 '''
 
-'''''   
-  #  best_decrypt = None
-  #  max_valid = 0
-
-    # use IoC to find most likely key_len
-    best_key_len = len_with_ioc(ciphertext, max_key_len)
-    print(f"Most likely key length from IoC: {best_key_len}")
-
-    for key in common_words:
-        if len(key) == best_key_len:
-            decrypted_text = decrypt_with_key(ciphertext, key)
-            valid_count = is_valid(decrypted_text, common_words)
-
-            # if more than 1/2 of words are valid
-            if valid_count > len(decrypted_text.split()) * 0.5:
-                print(f"Found valid decryption with key: {key}")
-                return key, decrypted_text
-            
-    return None, "Decryption failed"
-
- 
-'for key in common_words:
-        if len(key) == best_key_len:
-            # decrypt & count amt of valid words 
-            decrypted_text = decrypt_with_key(ciphertext, key)
-            valid_count = count_valid(decrypted_text, common_words)
-
-            # check if more than half of words are valid
-            if valid_count > len(decrypted_text.split()) * 0.5:
-          #      print("Found valid decryption!")  # ---------------------------------------- debugging
-                return key, decrypted_text
-            '''
-
-# func to remove non-alphabetic char and preprocess ciphertext
-def preprocess(ciphertext):
-    return ''.join([char.lower() for char in ciphertext if char.isalpha()])
-
-# entry point
-if __name__ == "__main__":
-    ciphertext = input("Enter the encrypted message: ")
-    cleaned_ciphertext = ''.join(c for c in ciphertext if c.isalpha() or c.isspace())  # Clean the input
-    key, decrypted_text = combined_decrypt_vignere(cleaned_ciphertext, max_key_len=10)
-    
-    if key:
-        print(f"Decryption successful!\nKey: {key}\nDecrypted Text: {decrypted_text}")
-    else:
-        print("Decryption failed")
-
-# -------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------
 
 '''
 from collections import Counter
