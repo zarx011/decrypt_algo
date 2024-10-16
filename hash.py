@@ -13,7 +13,7 @@ def load_dict(filename='common_words.txt'):
 # psuedo 'global variable' for file
 common_words = load_dict('common_words.txt')
     #-----------------------------------------------------------------------------------------------------------------------
-print(f"Common words loaded: {common_words}")
+#print(f"Common words loaded: {common_words}")
 
 
 # func to hash a key
@@ -22,6 +22,20 @@ def hash_key(key):
 
 # func to apply current key to decrypt ,shifts ciphertext to alpha 
 def apply_curr_key(ciphertext, key):
+    key_len = len(key)
+    decrypted_text = []
+
+    for i, char in enumerate(ciphertext):
+        if char.isalpha():
+            # calculate decrypted char
+            shift = ord(key[i % key_len].lower()) - ord('a')
+            decrypted_char = chr((ord(char) - ord('a') - shift) % 26 + ord('a'))
+            decrypted_text.append(decrypted_char)
+        else:
+            decrypted_text.append(char)
+    return ''.join(decrypted_text)
+ 
+'''
     plaintext = []
     key_len = len(key)
     # debug error check
@@ -37,11 +51,12 @@ def apply_curr_key(ciphertext, key):
             plaintext.append(char)  # preserve non-alphabetic chars
 
     return ''.join(plaintext) # return plaintext
+    '''
     
 # func to check valid words using hash table lookup
 def is_valid(decrypted_text, valid_words):
-    if not decrypted_text:
-        return False
+  #  if not decrypted_text:
+      #  return False
     words = decrypted_text.split()
         #-----------------------------------------------------------------------------------------------------------------------
     print(f"WORDS {words}")
@@ -63,31 +78,6 @@ def group_by_len(ciphertext, key_len):
     print(f"Grouped columns for key length {key_len}: {cols}")  # debug
     return [col for col in cols if col]  # filter out empty
 
-# func to calculate IoC for each guessed len
-def len_with_ioc(ciphertext, max_key_len = 10):
-    best_len = 1
-    best_ioc = 0.068
-    # to iterate each column
-    for key_len in range(1, max_key_len + 1):
-        cols = group_by_len(ciphertext, key_len)
-            #-----------------------------------------------------------------------------------------------------------------------
-        print(f"COLS {cols}")
-        if not cols:
-                continue # skip if empty
-        # calculate sum and avergae
-        ioc_sum = sum(calc_ioc(col) for col in cols)
-            #-----------------------------------------------------------------------------------------------------------------------
-        print(f"IOC SUM {ioc_sum}")
-        avg_ioc = ioc_sum / len(cols) if cols else 0.0
-            #-----------------------------------------------------------------------------------------------------------------------
-        print(f"AVG IOC {avg_ioc}")
-        # compare w target IoC of 0.068 [english language]
-        if abs(avg_ioc - 0.068) < abs(best_ioc - 0.068):
-            best_ioc = avg_ioc
-            best_len = key_len
-            print(f"BEST IOC {best_ioc} AND BEST LEN {best_len}")
-    return best_len if best_ioc > 0 else 1
-
 # helper func to calculate IoC for single col of ciphertext
 def calc_ioc(col_text):
     n = len(col_text)
@@ -102,10 +92,36 @@ def calc_ioc(col_text):
     denominator = n * (n - 1)
     #-----------------------------------------------------------------------------------------------------------------------
     print(f"DENOMINATOR {denominator}")
-    return numerator / denominator if denominator != 0 else 0.0
+    return numerator / denominator if denominator else 0.0
+
+# func to calculate IoC for each guessed len
+def len_with_ioc(ciphertext, max_key_len = 10):
+    best_len = 1
+    best_ioc = 0.068 # for english language
+    # to iterate each column
+    for key_len in range(1, max_key_len + 1):
+        cols = group_by_len(ciphertext, key_len)
+            #-----------------------------------------------------------------------------------------------------------------------
+        print(f"COLS {cols}")
+        if not cols:
+                continue # skip if empty
+        # calculate sum and avergae
+        #ioc_sum = sum(calc_ioc(col) for col in cols)
+            #-----------------------------------------------------------------------------------------------------------------------
+       # print(f"IOC SUM {ioc_sum}")
+       # avg_ioc = ioc_sum / len(cols) 
+        avg_ioc = sum(calc_ioc(col) for col in cols) / len(cols)
+            #-----------------------------------------------------------------------------------------------------------------------
+        print(f"AVG IOC {avg_ioc}")
+        # compare w target IoC of 0.068 [english language]
+        if abs(avg_ioc - 0.068) < abs(best_ioc - 0.068):
+            best_ioc = avg_ioc
+            best_len = key_len
+            print(f"BEST IOC {best_ioc} AND BEST LEN {best_len}")
+    return best_len
   
 # main decrypt func (combining IoC, Greedy and Hash) validation
-def combined_decrypt_vignere(ciphertext, max_key_len=10):
+def combined_decrypt_vignere(ciphertext, max_key_len=3):
     # common_words = load_dict('common_words.txt')
     likely_len = len_with_ioc(ciphertext, max_key_len)
         #-----------------------------------------------------------------------------------------------------------------------
@@ -118,9 +134,9 @@ def combined_decrypt_vignere(ciphertext, max_key_len=10):
     tested = set()
     # iterate through all possible keys
     for key in possible_keys:
-        key_hash = hash_key(key)
+       # key_hash = hash_key(key)
         # skip if already tested
-        if key_hash in tested:
+        if key in tested:
                 #-----------------------------------------------------------------------------------------------------------------------
             print(f"Skipping already tested key: {key}")
             continue
@@ -131,7 +147,7 @@ def combined_decrypt_vignere(ciphertext, max_key_len=10):
         if is_valid(decrypted_text, common_words):
             return key, decrypted_text  # return first valid decryption found
         # add hash of the tested key to set
-        tested.add(key_hash)
+        tested.add(key)
     # if no valid decryption found
     return None, None
 
@@ -141,11 +157,23 @@ def preprocess(ciphertext):
 
 # entry point
 if __name__ == "__main__":
-    ciphertext = input("Enter the encrypted message: ")
-    cleaned_ciphertext = ''.join(c for c in ciphertext if c.isalpha() or c.isspace())  # Clean the input
-    key, decrypted_text = combined_decrypt_vignere(cleaned_ciphertext, max_key_len=10)
+  #  ciphertext = input("Enter the encrypted message: ")
+    #cleaned_ciphertext = ''.join(c for c in ciphertext if c.isalpha() or c.isspace())  # Clean the input
+   # key, decrypted_text = combined_decrypt_vignere(cleaned_ciphertext, max_key_len=10)
         #-----------------------------------------------------------------------------------------------------------------------
 
+    ciphertext = "dlgc mq k xccx"  # Example encrypted message
+
+    # Determine the best key length
+    key_length = len_with_ioc(ciphertext)
+    print(f"Most likely key length: {key_length}")
+
+    # If you know the key (for testing), you can set it explicitly
+    known_key = "key"  # The actual key used for encryption
+    decrypted_text = apply_curr_key(ciphertext, known_key)
+
+    # Output results
+    print(f"Key: {known_key}, Decrypted Text: {decrypted_text}")
     #if key:
        #print(f"Decryption successful!\nKey: {key}\nDecrypted Text: {decrypted_text}")
     #else:
