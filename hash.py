@@ -68,7 +68,7 @@ def calc_ioc(col_text):
    n = len(cleaned_col_text)
    # avoid /0 error
    if n <= 1:
-       return 0
+       return " n less than or equal to 1"
    # calculate ioc
    ioc = sum(f * (f-1) for f in freq.values()) / (n *(n - 1))
    return ioc
