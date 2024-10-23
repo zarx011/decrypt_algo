@@ -9,7 +9,7 @@ def shift_decrypt(char, key_char):
     return char
 
 # func to apply current key to decrypt 
-def decrypt_wkey(ciphertext, key):
+def decrypt_with_key(ciphertext, key):
     key_len = len(key)
     plaintext = []
     key_index = 0  # separate counter for key idx
@@ -36,7 +36,7 @@ def backtrack(ciphertext, key_len, curr_key='', common_words=set()):
     print(f"Trying key length: {key_len}")  # debug
     for curr_key in common_words:
         if len(curr_key) == key_len:  # dheck if curr length matches
-            decrypted_text = decrypt_wkey(ciphertext, curr_key)  # decrypt
+            decrypted_text = decrypt_with_key(ciphertext, curr_key)  # decrypt
             print(f"Trying key: '{curr_key}' | Decrypted Text: '{decrypted_text}'")  # debugging
             
             if is_valid(decrypted_text, common_words):  # check validity
