@@ -1,8 +1,6 @@
 
 # file for backtracking Vignere decryption algorithm for demonstration
 
-
-
 import string
 
 # func to decrypt a char w/ key - shift first
@@ -40,37 +38,11 @@ def is_valid(decrypted_text, common_words):
 
 # backtracking func for key combinations
 def backtrack(ciphertext, key_len, curr_key='', common_words=set()):
-    '''print(f"Current key: {curr_key}, Length: {len(curr_key)}")  # debug
-
-    if len(curr_key) == key_len:
-        print("Reached desired key length:", curr_key)
-       decrypted_text = decrypt_wkey(ciphertext, curr_key)
-
-        print(f"Trying key: {curr_key}, Decrypted Text: {decrypted_text}")  # debugging
-
-        if is_valid(decrypted_text, common_words):
-            print("Found valid decryption!")
-            return curr_key, decrypted_text  # return when valid
-        else:
-           print(f"Decryption using key '{curr_key}' failed or not valid.")
-        return None, None  # if no valid decryption
-
-         recursively try all letters in alphabet
-   for letter in string.ascii_lowercase:
-       print(f"Trying letter: {letter} with current key: {curr_key}")  # Debugging
-        new_key, decrypted_text = backtrack(ciphertext, key_len, curr_key + letter, common_words)
-       if new_key:  # if valid key found, stop
-           return new_key, decrypted_text  # return immediately after finding
-
-     if no valid key, return None
-    return None, None
-'''
-    
     print(f"Trying key length: {key_len}")  # debug
     for curr_key in common_words:
         if len(curr_key) == key_len:  # dheck if curr length matches
             decrypted_text = decrypt_wkey(ciphertext, curr_key)  # decrypt
-            print(f"Trying key: '{curr_key}', Decrypted Text: '{decrypted_text}'")  # debugging
+            print(f"Trying key: '{curr_key}' | Decrypted Text: '{decrypted_text}'")  # debugging
             
             if is_valid(decrypted_text, common_words):  # check validity
                 print("Found valid decryption!")  # debugging 
@@ -85,10 +57,9 @@ def backtrack(ciphertext, key_len, curr_key='', common_words=set()):
 def decrypt_vigenere(ciphertext, max_key_len, common_words):
     for key_len in range(1, max_key_len + 1):
         print(f"Trying key length: {key_len}")
-
         key, decrypted_text = backtrack(ciphertext, key_len, common_words=common_words)
         if key:
-            return f"Key: {key} | Decrypted Text: {decrypted_text}"
+            return f"Key: '{key}' | Decrypted Text: '{decrypted_text}'"
     return "Decryption failed"
 
 # load set of common english words
