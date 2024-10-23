@@ -1,6 +1,4 @@
 # file for hash/dict/IOC Vignere decryption algorithm for demonstration
-
-# import string
 from collections import Counter
 import hashlib
 
