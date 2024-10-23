@@ -1,6 +1,4 @@
-
 # file for backtracking Vignere decryption algorithm for demonstration
-
 import string
 
 # func to decrypt a char w/ key - shift first
@@ -22,7 +20,6 @@ def decrypt_wkey(ciphertext, key):
             key_index += 1  # increment only for letters
         else:
             plaintext.append(char)  # preserve non-alphabetic chars
-
     return ''.join(plaintext)
 
 # func to validate decrypted text
@@ -31,9 +28,7 @@ def is_valid(decrypted_text, common_words):
     if not word_list:  # if empty
         return False
     valid_count = sum(1 for word in word_list if word in common_words)
-    
     print(f"Decrypted Text: {decrypted_text}, Valid Words: {valid_count}/{len(word_list)}")
-    
     return valid_count > len(word_list) * 0.5
 
 # backtracking func for key combinations
@@ -51,7 +46,6 @@ def backtrack(ciphertext, key_len, curr_key='', common_words=set()):
                 print(f"Decryption using key '{curr_key}' failed or not valid.")
     
     return None, None  # if no valid decryption
-
 
 # func to decrypt w/ multiple key lengths
 def decrypt_vigenere(ciphertext, max_key_len, common_words):
@@ -71,7 +65,6 @@ def load_common_words(filename='common_words.txt'):
 # test call
 if __name__ == "__main__":
     common_words = load_common_words()  #load from file
-    
     ciphertext = input("Enter the encrypted message: ").strip().lower()  # input handling
     result = decrypt_vigenere(ciphertext, max_key_len=10, common_words=common_words)
     print(result)
