@@ -2,7 +2,7 @@
 from collections import Counter
 import hashlib
 
-# create dictionary from common_words.txt to group by length
+# create dictionary from common_words.txt to group by len
 def load_dict(filename='common_words.txt'):
     with open(filename, 'r') as file:
         # read lines & strip whitespace & store as dictionary
@@ -24,7 +24,7 @@ def apply_curr_key(ciphertext, key):
     key_len = len(key)
     decrypted_text = []
     key_idx = 0 # to track key usage for alphabetic char only
-
+    # iterate through chars
     for char in ciphertext:
         if char.isalpha():
             # calculate shift based on key
@@ -35,7 +35,6 @@ def apply_curr_key(ciphertext, key):
         else:
             decrypted_text.append(char)
     return ''.join(decrypted_text)
-
 
 # func to find words from dict by length
 def find_by_len(common_words, length):
@@ -58,7 +57,7 @@ def calc_ioc(col_text):
    ioc = sum(f * (f-1) for f in freq.values()) / (n *(n - 1))
    return ioc
 
-# define ioc threshold to discard irrelevant values
+# 'psuedo global' var to define threshold 
 ioc_threshold = 0.0068 # ioc for english language
 
 # func to calculate IoC for each guessed len
@@ -76,7 +75,7 @@ def len_with_ioc(ciphertext, max_key_len):
             ioc_vals.append((key_len, avg_ioc))
     return ioc_vals
   
-# func to check valid words using hash table lookup
+# func to check valid words using hash lookup
 def is_valid(decrypted_text, common_words):
     words = decrypted_text.split()
     for word in words:
@@ -85,9 +84,9 @@ def is_valid(decrypted_text, common_words):
             return False # return early if invalud
     return True
 
-# main decrypt func (combining IoC, Greedy and Hash) validation
+# main decrypt func (combining IoC, greedy and hash validation)
 def combined_decrypt_vignere(ciphertext, max_key_len):
-    # only consider alpha chars
+    # only consider alphabetic chars
     cleaned_ciphertext = preprocess(ciphertext)
     likely_len = len_with_ioc(cleaned_ciphertext, max_key_len)
     # variable for possible keys
@@ -108,9 +107,9 @@ def combined_decrypt_vignere(ciphertext, max_key_len):
         # decrypt w/ current possible key
         decrypted_text = apply_curr_key(cleaned_ciphertext, key)
         print(f"Decrypted text: {decrypted_text}")
-
+        # validity check
         if is_valid(decrypted_text, common_words):
-            return key, decrypted_text  # return first valid decryption found
+            return key, decrypted_text  # return first valid found
         # add hash of the tested key to set
         tested.add(key_hash)
     # if no valid decryption found
@@ -119,11 +118,9 @@ def combined_decrypt_vignere(ciphertext, max_key_len):
 # entry point
 if __name__ == "__main__":
     ciphertext = input("Enter the encrypted message: ")
-
-    # example encrypted message - "this is a test with valid word" using key "key"
-    #ciphertext = "dlgc mq k xccx usxf fejsh uyvb"  
-
+    # preprocess before decryption
     cleaned_ciphertext = preprocess(ciphertext)
+    # run the decrypt algorithm 
     key, decrypted_text = combined_decrypt_vignere(cleaned_ciphertext, max_key_len=12)
     # determine best key length
     if key:
