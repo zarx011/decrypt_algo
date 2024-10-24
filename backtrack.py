@@ -1,4 +1,4 @@
-# file for backtracking Vignere decryption algorithm for demonstration
+# file for backtracking Vignere (no key) decryption algorithm for demonstration
 import string
 
 # func to decrypt a char w/ key - shift first
@@ -12,14 +12,14 @@ def shift_decrypt(char, key_char):
 def decrypt_with_key(ciphertext, key):
     key_len = len(key)
     plaintext = []
-    key_index = 0  # separate counter for key idx
+    key_index = 0  # counter for key idx
     for char in ciphertext:
         if char.isalpha():
-            key_char = key[key_index % key_len]  # only use for alphabetic characters
+            key_char = key[key_index % key_len]  # only use for alphabetic chars
             plaintext.append(shift_decrypt(char, key_char))
-            key_index += 1  # increment only for letters
+            key_index += 1  # increment idx
         else:
-            plaintext.append(char)  # preserve non-alphabetic chars
+            plaintext.append(char)  # preserve non-alphabetic 
     return ''.join(plaintext)
 
 # func to validate decrypted text
@@ -37,20 +37,19 @@ def backtrack(ciphertext, key_len, curr_key='', common_words=set()):
     for curr_key in common_words:
         if len(curr_key) == key_len:  # dheck if curr length matches
             decrypted_text = decrypt_with_key(ciphertext, curr_key)  # decrypt
-            print(f"Trying key: '{curr_key}' | Decrypted Text: '{decrypted_text}'")  # debugging
-            
-            if is_valid(decrypted_text, common_words):  # check validity
-                print("Found valid decryption!")  # debugging 
+            print(f"Trying key: '{curr_key}'")  # debug
+            # validity case handling
+            if is_valid(decrypted_text, common_words):  # if valid
+                print("Found valid decryption!") 
                 return curr_key, decrypted_text  # return when valid
             else:
-                print(f"Decryption using key '{curr_key}' failed or not valid.")
+                print(f"Decryption using key: '{curr_key}' failed")
     
     return None, None  # if no valid decryption
 
 # func to decrypt w/ multiple key lengths
 def decrypt_vigenere(ciphertext, max_key_len, common_words):
     for key_len in range(1, max_key_len + 1):
-        print(f"Trying key length: {key_len}")
         key, decrypted_text = backtrack(ciphertext, key_len, common_words=common_words)
         if key:
             return f"Key: '{key}' | Decrypted Text: '{decrypted_text}'"
