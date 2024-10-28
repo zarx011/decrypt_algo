@@ -1,10 +1,7 @@
 # decrypt_algo
 
- * in past have used README as a guide (for projects) but can 
- choose what to do w/ this file later - just adding few notes
-
-TODO:
- add steps here (?)
- format guide for backtrack.py and hash.py
-
- could add test cases here too 
+What the project does
+Why the project is useful
+How users can get started with the project
+Where users can get help with your project
+Who maintains and contributes to the project
