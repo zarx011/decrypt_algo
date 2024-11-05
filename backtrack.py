@@ -29,23 +29,25 @@ def is_valid(decrypted_text, common_words):
     if not word_list:  # if empty
         return False
     valid_count = sum(1 for word in word_list if word in common_words)
-    print(f"Decrypted Text: {decrypted_text}, Valid Words: {valid_count}/{len(word_list)}")
+   #] print(f"Decrypted Text: {decrypted_text}, Valid Words: {valid_count}/{len(word_list)}")
     return valid_count > len(word_list) * 0.5
 
 # backtracking func for key combinations
 def backtrack(ciphertext, key_len, curr_key='', common_words=set()):
-    print(f"Trying key length: {key_len}")  # debug
+    failed_attempts = 0  # Counter for failed decryption attempts
+  #  print(f"Trying key length: {key_len}")  # debug
     for curr_key in common_words:
         if len(curr_key) == key_len:  # dheck if curr length matches
             decrypted_text = decrypt_with_key(ciphertext, curr_key)  # decrypt
-            print(f"Trying key: '{curr_key}'")  # debug
+          #  print(f"Trying key: '{curr_key}'")  # debug
             # validity case handling
             if is_valid(decrypted_text, common_words):  # if valid
                 print("Found valid decryption!") 
                 return curr_key, decrypted_text  # return when valid
             else:
-                print(f"Decryption using key: '{curr_key}' failed")
-    
+               # print(f"Decryption using key: '{curr_key}' failed")
+               failed_attempts += 1
+
     return None, None  # if no valid decryption
 
 # func to decrypt w/ multiple key lengths
