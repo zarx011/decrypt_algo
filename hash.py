@@ -1,6 +1,7 @@
 # file for hash/dict/IOC Vignere decryption algorithm for demonstration
 from collections import Counter
 import hashlib
+import time
 
 # create dictionary from common_words.txt to group by len
 def load_dict(filename='common_words.txt'):
@@ -12,14 +13,14 @@ def load_dict(filename='common_words.txt'):
 common_words = load_dict('common_words.txt')
 
 # func to hash a key
-def hash_key(key):
+def hash_key(key): 
     return hashlib.md5(key.encode()).hexdigest()
 
 # func to ensure only alphabetic characters are processed
 def preprocess(ciphertext):
     return (''.join([char.lower() for char in ciphertext if char.isalpha() or char.isspace()]))
 
-# func to apply current key to decrypt ,shifts ciphertext to alpha 
+# func to apply current key to decrypt ,shifts ciphertext to a-lpha 
 def apply_curr_key(ciphertext, key):
     key_len = len(key)
     decrypted_text = []
@@ -72,7 +73,7 @@ def len_with_ioc(ciphertext, max_key_len):
         avg_ioc = sum(col_vals) / len(col_vals)
         # append len & avg if ioc meets threshold
         if avg_ioc >= ioc_threshold:
-            ioc_vals.append((key_len, avg_ioc))
+            ioc_vals.append((key_len, avg_ioc)) 
     return ioc_vals
   
 # func to check valid words using hash lookup
@@ -120,10 +121,16 @@ if __name__ == "__main__":
     ciphertext = input("Enter the encrypted message: ")
     # preprocess before decryption
     cleaned_ciphertext = preprocess(ciphertext)
+
+    start_time = time.time() # start timer
     # run the decrypt algorithm 
     key, decrypted_text = combined_decrypt_vignere(cleaned_ciphertext, max_key_len=12)
+    end_time = time.time() # end timer
+
     # determine best key length
     if key:
         print(f"Decryption successful!\nKey: {key} | Decrypted Text: {decrypted_text}")
     else:
         print(f"Decryption failed.\nKey: {key} | Decrypted Text: {decrypted_text}")
+    # print time taken for decryption
+    print(f"Decryption took {end_time - start_time:.2f} seconds")
