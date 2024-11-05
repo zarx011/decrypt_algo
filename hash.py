@@ -100,14 +100,14 @@ def combined_decrypt_vignere(ciphertext, max_key_len):
     # iterate through all possible keys
     for key in possible_keys:
         key_hash = hash_key(key)
-        print(f"Testing key: {key}")
+       # print(f"Testing key: {key}")
         # skip if already tested
         if key_hash in tested:
-            print(f"Skipping already tested key: {key}")
+         #   print(f"Skipping already tested key: {key}")
             continue
         # decrypt w/ current possible key
         decrypted_text = apply_curr_key(cleaned_ciphertext, key)
-        print(f"Decrypted text: {decrypted_text}")
+     #   print(f"Decrypted text: {decrypted_text}")
         # validity check
         if is_valid(decrypted_text, common_words):
             return key, decrypted_text  # return first valid found
@@ -124,7 +124,7 @@ if __name__ == "__main__":
 
     start_time = time.time() # start timer
     # run the decrypt algorithm 
-    key, decrypted_text = combined_decrypt_vignere(cleaned_ciphertext, max_key_len=12)
+    key, decrypted_text = combined_decrypt_vignere(cleaned_ciphertext, max_key_len=25)
     end_time = time.time() # end timer
 
     # determine best key length
