@@ -1,5 +1,6 @@
 # file for backtracking Vignere (no key) decryption algorithm for demonstration
 import string
+import time
 
 # func to decrypt a char w/ key - shift first
 def shift_decrypt(char, key_char):
@@ -65,5 +66,10 @@ def load_common_words(filename='common_words.txt'):
 if __name__ == "__main__":
     common_words = load_common_words()  #load from file
     ciphertext = input("Enter the encrypted message: ").strip().lower()  # input handling
+    
+    start_time = time.time() # start timer
     result = decrypt_vigenere(ciphertext, max_key_len=10, common_words=common_words)
+    end_time = time.time() # end timer
+
     print(result)
+    print(f"Decryption took {end_time - start_time:.2f} seconds")
