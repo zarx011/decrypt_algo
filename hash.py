@@ -11,6 +11,8 @@ def load_dict(filename='common_words.txt'):
     
 # psuedo 'global variable' for file
 common_words = load_dict('common_words.txt')
+#print([word for word in common_words.keys() if len(word) == 3])
+
 
 # func to hash a key
 def hash_key(key): 
@@ -56,6 +58,9 @@ def calc_ioc(col_text):
        return 0.0
    # calculate ioc
    ioc = sum(f * (f-1) for f in freq.values()) / (n *(n - 1))
+   print(f"Characters in column: {cleaned_col_text}")  # Debugging: print cleaned text
+   print(f"Frequency counts: {freq}")  # Debugging: print frequency counts
+   print(f"IOC :  {ioc}")
    return ioc
 
 # 'psuedo global' var to define threshold 
@@ -107,10 +112,12 @@ def combined_decrypt_vignere(ciphertext, max_key_len):
             continue
         # decrypt w/ current possible key
         decrypted_text = apply_curr_key(cleaned_ciphertext, key)
+        #print(f"Testing key '{key}' - Decrypted text: '{decrypted_text}'")  # Debug output
+
      #   print(f"Decrypted text: {decrypted_text}")
         # validity check
         if is_valid(decrypted_text, common_words):
-            return key, decrypted_text  # return first valid found
+           return key, decrypted_text  # return first valid found
         # add hash of the tested key to set
         tested.add(key_hash)
     # if no valid decryption found
