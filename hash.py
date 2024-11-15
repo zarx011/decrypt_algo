@@ -13,7 +13,6 @@ def load_dict(filename='common_words.txt'):
 common_words = load_dict('common_words.txt')
 #print([word for word in common_words.keys() if len(word) == 3])
 
-
 # func to hash a key
 def hash_key(key): 
     return hashlib.md5(key.encode()).hexdigest()
