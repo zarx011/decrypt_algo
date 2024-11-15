@@ -58,9 +58,6 @@ def calc_ioc(col_text):
        return 0.0
    # calculate ioc
    ioc = sum(f * (f-1) for f in freq.values()) / (n *(n - 1))
-   print(f"Characters in column: {cleaned_col_text}")  # Debugging: print cleaned text
-   print(f"Frequency counts: {freq}")  # Debugging: print frequency counts
-   print(f"IOC :  {ioc}")
    return ioc
 
 # 'psuedo global' var to define threshold 
