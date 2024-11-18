@@ -46,6 +46,14 @@ def find_by_len(common_words, length):
 def group_by_len(ciphertext, key_len):
     return [ciphertext[i::key_len] for i in range(key_len)]  # filter out empty
   
+from concurrent.futures import ThreadPoolExecutor
+
+def calc_ioc_parallel(ciphertext, key_len):
+    cols = group_by_len(ciphertext, key_len)
+    with ThreadPoolExecutor() as executor:
+        ioc_vals = list(executor.map(calc_ioc, cols))
+    return ioc_vals
+
 # helper func to calculate IoC for single col of ciphertext
 def calc_ioc(col_text):
    cleaned_col_text = preprocess(col_text)
@@ -80,10 +88,10 @@ def len_with_ioc(ciphertext, max_key_len):
 # func to check valid words using hash lookup
 def is_valid(decrypted_text, common_words):
     words = decrypted_text.split()
+    common_words_set = set(common_words)  # Convert the list to a set for O(1) lookups
     for word in words:
-        valid = word in common_words
-        if not valid:
-            return False # return early if invalud
+        if word not in common_words_set:  # Set lookup is faster than list lookup
+            return False
     return True
 
 # main decrypt func (combining IoC, greedy and hash validation)
@@ -119,16 +127,24 @@ def combined_decrypt_vignere(ciphertext, max_key_len):
     # if no valid decryption found
     return None, None
 
+import cProfile
 # entry point
 if __name__ == "__main__":
     ciphertext = input("Enter the encrypted message: ")
     # preprocess before decryption
     cleaned_ciphertext = preprocess(ciphertext)
 
+    profiler = cProfile.Profile()
+    profiler.enable()
     start_time = time.time() # start timer
+    
     # run the decrypt algorithm 
     key, decrypted_text = combined_decrypt_vignere(cleaned_ciphertext, max_key_len=25)
     end_time = time.time() # end timer
+    
+    profiler.disable()
+    profiler.print_stats()
+    
 
     # determine best key length
     if key:
