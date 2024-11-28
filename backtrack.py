@@ -1,8 +1,10 @@
+
 # file for backtracking Vignere (no key) decryption algorithm for demonstration
+
 import string
 import time
 
-# func to decrypt a char w/ key - shift first
+# func to decrypt a char w/ key [shift first]
 def shift_decrypt(char, key_char):
     if char.isalpha():
         shift = ord(key_char.lower()) - ord('a')
@@ -29,23 +31,19 @@ def is_valid(decrypted_text, common_words):
     if not word_list:  # if empty
         return False
     valid_count = sum(1 for word in word_list if word in common_words)
-   #] print(f"Decrypted Text: {decrypted_text}, Valid Words: {valid_count}/{len(word_list)}")
     return valid_count > len(word_list) * 0.5
 
 # backtracking func for key combinations
 def backtrack(ciphertext, key_len, curr_key='', common_words=set()):
-    failed_attempts = 0  # Counter for failed decryption attempts
-  #  print(f"Trying key length: {key_len}")  # debug
+    failed_attempts = 0  # count failed attempts
     for curr_key in common_words:
-        if len(curr_key) == key_len:  # dheck if curr length matches
+        if len(curr_key) == key_len:  # check if curr len matches
             decrypted_text = decrypt_with_key(ciphertext, curr_key)  # decrypt
-          #  print(f"Trying key: '{curr_key}'")  # debug
             # validity case handling
             if is_valid(decrypted_text, common_words):  # if valid
                 print("Found valid decryption!") 
                 return curr_key, decrypted_text  # return when valid
             else:
-               # print(f"Decryption using key: '{curr_key}' failed")
                failed_attempts += 1
 
     return None, None  # if no valid decryption
@@ -61,12 +59,12 @@ def decrypt_vigenere(ciphertext, max_key_len, common_words):
 # load set of common english words
 def load_common_words(filename='common_words.txt'):
     with open(filename, 'r') as file:
-        # read lines & strip whitespace, then convert to a set
+        # read lines/strip whitespace & convert to a set
         return {line.strip() for line in file if line.strip()}
 
 # test call
 if __name__ == "__main__":
-    common_words = load_common_words()  #load from file
+    common_words = load_common_words()  #l oad from file
     ciphertext = input("Enter the encrypted message: ").strip().lower()  # input handling
     
     start_time = time.time() # start timer
