@@ -1,6 +1,6 @@
-# decrypt_algo
 
-Vigenère Cipher Decryption Algorithms
+
+# Vigenère Cipher Decryption Algorithms
 
 Repository demonstrates two approaches to decrypting text-encrypted messages using the Vigenère cipher
 without a known key implemented with python
@@ -12,7 +12,7 @@ without a known key implemented with python
 2. hash/ioc-based algorithm (hash.py): incorporates the Index of Coincidence (IoC), hashing, and a dictionary for efficient key guessing/storage
 
 
-*** Features
+# Features
 
 backtrack.py
 - attempts to decrypt ciphertext by iterating through all possible keys of specified length in common_words.txt
@@ -26,7 +26,7 @@ hash.py
 - prioritizes efficiency while maintain accuracy in decryption
 
 
-*** Functionality
+# Functionality
 
 1. shift decrypt: decrypts single characher (char) using a given key
 2. key application: applies current key to decrypt entire ciphertext
@@ -35,13 +35,13 @@ hash.py
 5. ioc analysis: calculates IoC to predict likely key length to prioritize testing
 
 
-*** Requirements
+# Requirements
 
 - python3 (3.7 or above)
 - common_words.txt file containing common words, one word per-line, to later be converted to dictionary
 
 
-*** Usage
+# Usage
 
 to run backtrack.py:  python3 backtrack.py
 to run hash.py:       python3 hash.py
@@ -49,7 +49,7 @@ to run hash.py:       python3 hash.py
 for both files, enter encrypted message when prompted -- the script will then attempt to decrypt and display the result, including the found key and decrypted text
 
 
-*** Example(s)
+# Example(s)
 
 Enter the encrypted message: ______________
 
@@ -64,7 +64,7 @@ Key: '______________' | Decrypted Text: '________'
 Decryption took ____ seconds
 
 
-*** Implementation Notes
+# Implementation Notes
 
 backtrack.py
 - strengths: straightforward, exhaustive, easy to understand
@@ -74,4 +74,5 @@ hash.py:
 - strengths: optimized for perfroamnce, reduces redundant key tests
 - limitations: relies on IoC trhresholds, may skip valid keys if thresholds are off
 
-NOTE: for both , must ensure that the encrypted text (plaintext message) AND the key only contain words found in common_words.txt as the project is modified to only validate words found in the dictionary
+# NOTE: 
+for both , must ensure that the encrypted text (plaintext message) AND the key only contain words found in common_words.txt as the project is modified to only validate words found in the dictionary
