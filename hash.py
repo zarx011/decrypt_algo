@@ -5,6 +5,7 @@ from collections import Counter
 import hashlib
 import time
 
+
 # create dictionary from common_words.txt 
 def load_dict(filename='common_words.txt'):
     with open(filename, 'r') as file:
@@ -61,7 +62,7 @@ def calc_ioc(col_text):
    return ioc
 
 # 'psuedo global' var to define threshold 
-ioc_threshold = 0.068 # ioc for english language
+ioc_threshold = 0.0068 # ioc for english language
 
 # func to calc ioc for each guessed len
 def len_with_ioc(ciphertext, max_key_len):
