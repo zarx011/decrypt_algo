@@ -5,22 +5,18 @@ Vigenère Cipher Decryption Algorithms
 Repository demonstrates two approaches to decrypting text-encrypted messages using the Vigenère cipher
 without a known key implemented with python
 
-1. backtracking algorithm (backtrack.py):  uses a brute-force approach combined with a dictionary of 
-   common words (list taken from the Bag of Words dataset of the UC Irving Machine Learning Database
+1. backtracking algorithm (backtrack.py):  uses a brute-force approach combined with a dictionary of common words (list taken from the Bag of Words dataset of the UC Irving Machine Learning Database
    -- edited with previously generated collection created using ChatGPT for a total of ~45k words
    [common_words.txt] file)
 
-2. hash/ioc-based algorithm (hash.py): incorporates the Index of Coincidence (IoC), hashing, and a
-   dictionary for efficient key guessing/storage
+2. hash/ioc-based algorithm (hash.py): incorporates the Index of Coincidence (IoC), hashing, and a dictionary for efficient key guessing/storage
 
 
 *** Features
 
 backtrack.py
-- attempts to decrypt ciphertext by iterating through all possible keys of specified length in 
-  common_words.txt
-- uses dictionary of common english words to validate potential decryptions - key and ciphertext 
-  required to be located in common_words.txt file in order for program to validate (limitation)
+- attempts to decrypt ciphertext by iterating through all possible keys of specified length in common_words.txt
+- uses dictionary of common english words to validate potential decryptions - key and ciphertext required to be located in common_words.txt file in order for program to validate (limitation)
 - simplified for demonstration purposes, is considered the worst case decryption approach when
   considering algorithmic runtime
 
@@ -50,8 +46,7 @@ hash.py
 to run backtrack.py:  python3 backtrack.py
 to run hash.py:       python3 hash.py
 
-for both files, enter encrypted message when prompted -- the script will then attempt to decrypt 
-and display the result, including the found key and decrypted text
+for both files, enter encrypted message when prompted -- the script will then attempt to decrypt and display the result, including the found key and decrypted text
 
 
 *** Example(s)
@@ -79,5 +74,4 @@ hash.py:
 - strengths: optimized for perfroamnce, reduces redundant key tests
 - limitations: relies on IoC trhresholds, may skip valid keys if thresholds are off
 
-NOTE: for both , must ensure that the encrypted text (plaintext message) AND the key only contain words found in common_words.txt
-      as the project is modified to only validate words found in the dictionary
+NOTE: for both , must ensure that the encrypted text (plaintext message) AND the key only contain words found in common_words.txt as the project is modified to only validate words found in the dictionary
