@@ -43,8 +43,11 @@ hash.py
 
 # Usage
 
-to run backtrack.py:  python3 backtrack.py
-to run hash.py:       python3 hash.py
+to run backtrack.py:  
+python3 backtrack.py
+
+to run hash.py:      
+python3 hash.py
 
 for both files, enter encrypted message when prompted -- the script will then attempt to decrypt and display the result, including the found key and decrypted text
 
