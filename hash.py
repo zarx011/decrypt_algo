@@ -5,7 +5,6 @@ from collections import Counter
 import hashlib
 import time
 
-
 # create dictionary from common_words.txt 
 def load_dict(filename='common_words.txt'):
     with open(filename, 'r') as file:
@@ -69,7 +68,8 @@ def len_with_ioc(ciphertext, max_key_len):
     # to iterate each colu
     ioc_vals = []
     for key_len in range(1, max_key_len + 1):
-        cols = [''.join([ciphertext[i] for i in range(j, len(ciphertext), key_len)]) for j in range(key_len)]
+        cols = [''.join([ciphertext[i] for i in range(j, 
+        len(ciphertext), key_len)]) for j in range(key_len)]
         # calc ioc for each col
         col_vals = [calc_ioc(col) for col in cols]
         # avg ioc for curr key_len
